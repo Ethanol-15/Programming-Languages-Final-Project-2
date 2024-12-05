@@ -1,0 +1,5 @@
+com\cpo\syntax_checker\SyntaxCheckerApplication.class
+com\cpo\syntax_checker\SyntaxCheckerRequest.class
+com\cpo\syntax_checker\SyntaxCheckerService.class
+com\cpo\syntax_checker\SyntaxCheckerController.class
+com\cpo\syntax_checker\SyntaxChecker.class
