@@ -6,82 +6,94 @@ import java.util.List;
 public class SyntaxChecker {
 
     public static boolean isValidAssignment(String input) {
-        input = input.trim(); // Remove leading/trailing spaces
+        try {
+            input = input.trim(); // Remove leading/trailing spaces
 
-        if (input.isEmpty()) {
-            return false; // Empty input is invalid
+            if (input.isEmpty()) {
+                throw new IllegalArgumentException("Input cannot be empty.");
+            }
+
+            // Tokenize the input
+            List<String> tokens = tokenize(input);
+
+            // Check for type declaration (optional first token)
+            String firstToken = tokens.get(0);
+            if (isDataType(firstToken)) {
+                tokens.remove(0); // Remove the type declaration for further validation
+            }
+
+            // Ensure there's a variable name after the optional type declaration
+            if (tokens.isEmpty() || !isValidVariable(tokens.get(0))) {
+                throw new SyntaxException("Invalid or missing variable name.");
+            }
+
+            // Check for assignment operator (=)
+            if (tokens.size() < 3 || !tokens.get(1).equals("=")) {
+                throw new SyntaxException("Missing or incorrect assignment operator.");
+            }
+
+            // Validate the expression after the assignment operator
+            String expression = String.join(" ", tokens.subList(2, tokens.size() - 1));
+            if (!isValidExpression(expression)) {
+                throw new SyntaxException("Invalid expression.");
+            }
+
+            // Check for semicolon at the end
+            if (!input.endsWith(";")) {
+                throw new SyntaxException("Statement must end with a semicolon.");
+            }
+
+            return true; // Valid assignment statement
+        } catch (SyntaxException e) {
+            System.err.println("Syntax Error: " + e.getMessage());
+            return false;
+        } catch (Exception e) {
+            System.err.println("Unexpected Error: " + e.getMessage());
+            return false;
         }
-
-        // Tokenize the input
-        List<String> tokens = tokenize(input);
-
-        // Check for type declaration (optional first token)
-        String firstToken = tokens.get(0);
-        if (isDataType(firstToken)) {
-            tokens.remove(0); // Remove the type declaration for further validation
-        }
-
-        // Ensure there's a variable name after the optional type declaration
-        if (tokens.isEmpty() || !isValidVariable(tokens.get(0))) {
-            return false; // Invalid variable name
-        }
-
-        // Check for assignment operator (=)
-        if (tokens.size() < 3 || !tokens.get(1).equals("=")) {
-            return false; // Missing or incorrect assignment operator
-        }
-
-        // Validate the expression after the assignment operator
-        String expression = String.join(" ", tokens.subList(2, tokens.size() - 1));
-        if (!isValidExpression(expression)) {
-            return false; // Invalid expression
-        }
-
-        // Check for semicolon at the end
-        if (!input.endsWith(";")) {
-            return false; // Statement must end with a semicolon
-        }
-
-        return true; // Valid assignment statement
     }
 
     // Helper method to tokenize the input string
     public static List<String> tokenize(String input) {
-        List<String> tokens = new ArrayList<>();
-        StringBuilder currentToken = new StringBuilder();
+        try {
+            List<String> tokens = new ArrayList<>();
+            StringBuilder currentToken = new StringBuilder();
 
-        for (int i = 0; i < input.length(); i++) {
-            char ch = input.charAt(i);
+            for (int i = 0; i < input.length(); i++) {
+                char ch = input.charAt(i);
 
-            // Check for whitespace
-            if (Character.isWhitespace(ch)) {
-                if (currentToken.length() > 0) {
-                    tokens.add(currentToken.toString());
-                    currentToken.setLength(0); // Clear current token
+                // Check for whitespace
+                if (Character.isWhitespace(ch)) {
+                    if (currentToken.length() > 0) {
+                        tokens.add(currentToken.toString());
+                        currentToken.setLength(0); // Clear current token
+                    }
+                    continue;
                 }
-                continue;
+
+                // Handle delimiters like =, ;, etc.
+                if ("=;".indexOf(ch) != -1) {
+                    if (currentToken.length() > 0) {
+                        tokens.add(currentToken.toString());
+                        currentToken.setLength(0); // Clear current token
+                    }
+                    tokens.add(Character.toString(ch)); // Add delimiter as a token
+                    continue;
+                }
+
+                // Append other characters to the current token
+                currentToken.append(ch);
             }
 
-            // Handle delimiters like =, ;, etc.
-            if ("=;".indexOf(ch) != -1) {
-                if (currentToken.length() > 0) {
-                    tokens.add(currentToken.toString());
-                    currentToken.setLength(0); // Clear current token
-                }
-                tokens.add(Character.toString(ch)); // Add delimiter as a token
-                continue;
+            // Add the last token if exists
+            if (currentToken.length() > 0) {
+                tokens.add(currentToken.toString());
             }
 
-            // Append other characters to the current token
-            currentToken.append(ch);
+            return tokens;
+        } catch (Exception e) {
+            throw new RuntimeException("Error during tokenization: " + e.getMessage());
         }
-
-        // Add the last token if exists
-        if (currentToken.length() > 0) {
-            tokens.add(currentToken.toString());
-        }
-
-        return tokens;
     }
 
     // Helper method to validate variable names
@@ -91,20 +103,25 @@ public class SyntaxChecker {
 
     // Helper method to validate expressions
     public static boolean isValidExpression(String expression) {
-        if (expression.isEmpty()) {
-            return false; // Empty expression is invalid
-        }
-
-        List<String> tokens = tokenize(expression);
-
-        // Check for valid operands and operators
-        for (String token : tokens) {
-            if (!isValidOperand(token) && !isOperator(token)) {
-                return false; // Invalid token in expression
+        try {
+            if (expression.isEmpty()) {
+                throw new SyntaxException("Expression cannot be empty.");
             }
-        }
 
-        return true; // Valid expression
+            List<String> tokens = tokenize(expression);
+
+            // Check for valid operands and operators
+            for (String token : tokens) {
+                if (!isValidOperand(token) && !isOperator(token)) {
+                    throw new SyntaxException("Invalid token in expression: " + token);
+                }
+            }
+
+            return true; // Valid expression
+        } catch (SyntaxException e) {
+            System.err.println("Expression Error: " + e.getMessage());
+            return false;
+        }
     }
 
     // Helper method to validate operands
@@ -121,5 +138,12 @@ public class SyntaxChecker {
     private static boolean isDataType(String token) {
         return token.equals("int") || token.equals("float") || token.equals("double") ||
                token.equals("char") || token.equals("boolean") || token.equals("String");
+    }
+
+    // Custom exception class for syntax errors
+    public static class SyntaxException extends Exception {
+        public SyntaxException(String message) {
+            super(message);
+        }
     }
 }
