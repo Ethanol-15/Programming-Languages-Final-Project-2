@@ -1,8 +1,6 @@
 Project Setup
 Download Spring Boot Project Folder in Google Drive
-https://drive.google.com/drive/u/1/folders/1BJgnsiFsaNQtSAa8rHZcnRfY3sSpdcPK
-
-
+(https://drive.google.com/drive/u/1/folders/1GQSYy-mIHUcpJydzsCaE_WbPRX23sNJM)
 
 Run the project in IDE (eclipseIDE)
 Change directory in terminal to the syntax checker
