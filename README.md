@@ -26,7 +26,7 @@ This project is a **Syntax Checker SaaS** built with **Spring Boot**, providing 
 The project was created using **Spring Initializer** with the following configuration:
 - **Project**: Maven
 - **Language**: Java
-- **Spring Boot Version**: 3.x
+- **Spring Boot Version**: 3.4
 - **Packaging**: Jar
 - **Java Version**: 17
 - **Dependencies**:
