@@ -58,9 +58,34 @@ public class SyntaxChecker {
         try {
             List<String> tokens = new ArrayList<>();
             StringBuilder currentToken = new StringBuilder();
+            boolean inStringLiteral = false;
 
             for (int i = 0; i < input.length(); i++) {
                 char ch = input.charAt(i);
+
+                // Handle string literals
+                if (ch == '"') {
+                    if (inStringLiteral) {
+                        currentToken.append(ch); // Close the string literal
+                        tokens.add(currentToken.toString());
+                        currentToken.setLength(0);
+                        inStringLiteral = false;
+                    } else {
+                        if (currentToken.length() > 0) {
+                            tokens.add(currentToken.toString());
+                            currentToken.setLength(0);
+                        }
+                        inStringLiteral = true;
+                        currentToken.append(ch); // Start the string literal
+                    }
+                    continue;
+                }
+
+                // Inside a string literal
+                if (inStringLiteral) {
+                    currentToken.append(ch);
+                    continue;
+                }
 
                 // Check for whitespace
                 if (Character.isWhitespace(ch)) {
@@ -126,7 +151,7 @@ public class SyntaxChecker {
 
     // Helper method to validate operands
     public static boolean isValidOperand(String token) {
-        return token.matches("[a-zA-Z_][a-zA-Z0-9_]*|(-?\\d+)|true|false"); // Variable, integer (positive/negative), or boolean literals
+        return token.matches("[a-zA-Z_][a-zA-Z0-9_]*|(-?\\d+)|true|false|\".*\""); // Variable, integer (positive/negative), boolean, or string literals
     }
 
     // Helper method to validate operators
