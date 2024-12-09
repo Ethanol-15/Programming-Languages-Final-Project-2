@@ -1,13 +1,15 @@
 # Syntax Checker SaaS
 
-This project is a **Syntax Checker SaaS** built with **Spring Boot**, providing a REST API to validate Java assignment statements. It includes a user-friendly UI and robust backend validation with exception handling.
+This project is a **Syntax Checker SaaS** built with **Spring Boot**, providing a REST API to validate Java assignment statements. It includes a user-friendly UI and robust backend validation with exception handling and rate limiting.
 
 ---
 
 ## Features
 - **Syntax Validation**: Checks the validity of Java assignment statements.
-- **Rate Limiting**: Limits API calls to 10 per minute for reliable usage.
-- **Error Handling**: Provides clear error messages for invalid syntax.
+- **Rate Limiting**: Limits API calls to 10 per minute for reliable usage with cooldown tracking.
+- **Reflection**: Demonstrates accessing private fields using Java Reflection API.
+- **Abstraction**: Follows interface-driven design for flexibility and extensibility.
+- **Error Handling**: Provides clear error messages for invalid syntax and unexpected errors.
 - **User-Friendly UI**: A simple and responsive interface to test the syntax checker.
 - **Postman API Testing**: Allows direct testing of the backend using Postman.
 
@@ -45,11 +47,25 @@ The project was created using **Spring Initializer** with the following configur
 
 ### **3. Backend Implementation**
 The backend contains the following key components:
-- **SyntaxChecker.java**: Handles syntax validation logic with added exception handling for seamless error management.
+
+#### **Core Components**
+- **SyntaxChecker.java**: Handles syntax validation logic for Java assignment statements.
 - **SyntaxCheckerApplication.java**: The main entry point for the Spring Boot application.
+
+#### **Service Components**
+- **SyntaxCheckerService.java**: Implements business logic for syntax checking, rate-limiting, and API call tracking.
+- **RateLimitService.java**: Manages API call limits, cooldown periods, and call resets to ensure reliable usage.
+
+#### **Interface Components**
+- **SyntaxCheckerServiceInterface.java**: Provides abstraction for the `SyntaxCheckerService`, ensuring flexibility and adherence to abstraction principles.
+
+#### **Controller Components**
 - **SyntaxCheckerController.java**: Exposes REST API endpoints for syntax validation and API stats.
-- **SyntaxCheckerRequest.java**: Represents incoming request payloads.
-- **SyntaxCheckerService.java**: Implements business logic, including rate-limiting and API call tracking.
+  - Includes a demonstration of Java Reflection to access private fields.
+  - Supports endpoints for resetting API calls and fetching stats.
+
+#### **Model Components**
+- **SyntaxCheckerRequest.java**: Represents incoming request payloads for syntax validation.
 
 ---
 
