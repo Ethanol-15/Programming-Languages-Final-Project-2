@@ -3,7 +3,7 @@ package com.cpo.syntax_checker;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SyntaxCheckerService {
+public class SyntaxCheckerService implements SyntaxCheckerServiceInterface {
 
     private final RateLimitService rateLimitService;
 
@@ -11,7 +11,7 @@ public class SyntaxCheckerService {
         this.rateLimitService = rateLimitService;
     }
 
-    // Method to check the syntax of the provided code
+    @Override
     public String checkSyntax(SyntaxCheckerRequest request) {
         try {
             // Check for rate limit
@@ -38,12 +38,12 @@ public class SyntaxCheckerService {
         }
     }
 
-    // Method to get the total number of API calls
+    @Override
     public int getTotalCalls() {
         return rateLimitService.getTotalCalls();
     }
 
-    // Optional: Reset total calls manually (if required)
+    @Override
     public void resetTotalCalls() {
         rateLimitService.resetTotalCalls();
     }
