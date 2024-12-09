@@ -81,14 +81,8 @@ public class SyntaxChecker {
                     continue;
                 }
 
-                // Inside a string literal
-                if (inStringLiteral) {
-                    currentToken.append(ch);
-                    continue;
-                }
-
                 // Check for whitespace
-                if (Character.isWhitespace(ch)) {
+                if (!inStringLiteral && Character.isWhitespace(ch)) {
                     if (currentToken.length() > 0) {
                         tokens.add(currentToken.toString());
                         currentToken.setLength(0); // Clear current token
@@ -96,8 +90,8 @@ public class SyntaxChecker {
                     continue;
                 }
 
-                // Handle delimiters like =, ;, etc.
-                if ("=;".indexOf(ch) != -1) {
+                // Handle delimiters like =, ;, ( ), etc.
+                if (!inStringLiteral && "=;()".indexOf(ch) != -1) {
                     if (currentToken.length() > 0) {
                         tokens.add(currentToken.toString());
                         currentToken.setLength(0); // Clear current token
@@ -135,11 +129,25 @@ public class SyntaxChecker {
 
             List<String> tokens = tokenize(expression);
 
+            // Track parentheses for matching
+            int parenthesesCount = 0;
+
             // Check for valid operands and operators
             for (String token : tokens) {
-                if (!isValidOperand(token) && !isOperator(token)) {
+                if (token.equals("(")) {
+                    parenthesesCount++;
+                } else if (token.equals(")")) {
+                    if (parenthesesCount == 0) {
+                        throw new SyntaxException("Unmatched closing parenthesis.");
+                    }
+                    parenthesesCount--;
+                } else if (!isValidOperand(token) && !isOperator(token) && !isComparisonOperator(token)) {
                     throw new SyntaxException("Invalid token in expression: " + token);
                 }
+            }
+
+            if (parenthesesCount != 0) {
+                throw new SyntaxException("Unmatched opening parenthesis.");
             }
 
             return true; // Valid expression
@@ -151,7 +159,8 @@ public class SyntaxChecker {
 
     // Helper method to validate operands
     public static boolean isValidOperand(String token) {
-        return token.matches("[a-zA-Z_][a-zA-Z0-9_]*|(-?\\d+)|true|false|\".*\""); // Variable, integer (positive/negative), boolean, or string literals
+        return token.matches("[a-zA-Z_][a-zA-Z0-9_]*|(-?\\d+(\\.\\d+)?([eE][+-]?\\d+)?[Ll]?|true|false|\".*\"|'.')"); 
+        // Variable, integer, floating-point, long literals, boolean, string literals, char literals
     }
 
     // Helper method to validate operators
@@ -159,10 +168,16 @@ public class SyntaxChecker {
         return token.equals("+") || token.equals("-") || token.equals("*") || token.equals("/") || token.equals("%");
     }
 
+    // Helper method to validate comparison operators
+    public static boolean isComparisonOperator(String token) {
+        return token.equals(">") || token.equals("<") || token.equals(">=") || token.equals("<=") || 
+               token.equals("==") || token.equals("!=");
+    }
+
     // Helper method to check if a token is a valid data type
-    private static boolean isDataType(String token) {
+    public static boolean isDataType(String token) {
         return token.equals("int") || token.equals("float") || token.equals("double") ||
-               token.equals("char") || token.equals("boolean") || token.equals("String");
+               token.equals("char") || token.equals("boolean") || token.equals("long") || token.equals("String");
     }
 
     // Custom exception class for syntax errors
