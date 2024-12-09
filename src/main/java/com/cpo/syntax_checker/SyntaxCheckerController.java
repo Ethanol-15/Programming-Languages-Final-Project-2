@@ -10,9 +10,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RequestMapping("/api")
 public class SyntaxCheckerController {
 
-    private final SyntaxCheckerService syntaxCheckerService;
+    private final SyntaxCheckerServiceInterface syntaxCheckerService; // Use the interface instead of the concrete class
 
-    public SyntaxCheckerController(SyntaxCheckerService syntaxCheckerService) {
+    public SyntaxCheckerController(SyntaxCheckerServiceInterface syntaxCheckerService) {
         this.syntaxCheckerService = syntaxCheckerService;
     }
 
