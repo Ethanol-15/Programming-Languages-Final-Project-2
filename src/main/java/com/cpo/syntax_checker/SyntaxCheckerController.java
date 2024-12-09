@@ -2,7 +2,9 @@ package com.cpo.syntax_checker;
 
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Field;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
 @RequestMapping("/api")
@@ -36,5 +38,20 @@ public class SyntaxCheckerController {
     public String resetApiCalls() {
         syntaxCheckerService.resetTotalCalls();
         return "API call count has been reset.";
+    }
+
+    // Reflection demonstration endpoint
+    @GetMapping("/reflection-demo")
+    public Map<String, String> reflectOnCallCount() {
+        try {
+            // Access the private field 'callCount' in SyntaxCheckerService
+            Field field = SyntaxCheckerService.class.getDeclaredField("callCount");
+            field.setAccessible(true); // Make the field accessible
+            AtomicInteger callCount = (AtomicInteger) field.get(syntaxCheckerService); // Get the value of the field
+
+            return Map.of("status", "success", "callCount", String.valueOf(callCount.get()));
+        } catch (Exception e) {
+            return Map.of("status", "error", "message", "Failed to access call count: " + e.getMessage());
+        }
     }
 }
