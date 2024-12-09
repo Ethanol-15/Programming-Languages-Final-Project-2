@@ -2,6 +2,9 @@ package com.cpo.syntax_checker;
 
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class SyntaxCheckerService implements SyntaxCheckerServiceInterface {
 
@@ -46,5 +49,19 @@ public class SyntaxCheckerService implements SyntaxCheckerServiceInterface {
     @Override
     public void resetTotalCalls() {
         rateLimitService.resetTotalCalls();
+    }
+
+    // Functional Programming: Validate multiple syntax requests
+    public List<String> validateMultipleRequests(List<SyntaxCheckerRequest> requests) {
+        return requests.stream()
+                .map(request -> {
+                    // Use the existing checkSyntax method for validation
+                    if (request != null && request.getCode() != null) {
+                        return checkSyntax(request);
+                    } else {
+                        return "Invalid input: Request or code is null.";
+                    }
+                })
+                .collect(Collectors.toList()); // Collect results into a list
     }
 }
