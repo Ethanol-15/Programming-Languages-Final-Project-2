@@ -18,7 +18,7 @@ public class SyntaxCheckerController {
         this.syntaxCheckerService = syntaxCheckerService;
     }
 
-    @PostMapping("/check")
+    @PostMapping("/check")//HTTP Response
     public ResponseEntity<Map<String, String>> checkSyntax(@RequestBody SyntaxCheckerRequest request) {
         String result = syntaxCheckerService.checkSyntax(request);
 
