@@ -16,8 +16,8 @@ This project is a **Syntax Checker SaaS** built with **Spring Boot**, providing 
 ---
 
 ## Team
-- **Lyle**: Systems Analyst
-- **Joaquin**: Development Lead
+- **Lyle**: Development Lead
+- **Joaquin**: Systems Analyst
 - **Ansel**: Quality Assurance Lead and Developer
 
 ---
