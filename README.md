@@ -78,7 +78,7 @@ To interact with the syntax checker, the project includes:
 ---
 
 ### **5. Run the Application**
-1. Open a terminal or IDE terminal and navigate to the project directory.
-2. Build the project using Maven:
-   ```bash
-   mvn clean install
+1. Open the project in an IDE.
+2. Build and Run the _SyntaxCheckerApplication_ file.
+3. In a web browser, go to localhost:2424
+   
