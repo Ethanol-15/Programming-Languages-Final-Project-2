@@ -80,5 +80,5 @@ To interact with the syntax checker, the project includes:
 ### **5. Run the Application**
 1. Open the project in an IDE.
 2. Build and Run the _SyntaxCheckerApplication_ file.
-3. In a web browser, go to localhost:2424
+3. You will be redirected to the Syntax Checker interface hosted on **localhost:2424** on a web browser.
    
