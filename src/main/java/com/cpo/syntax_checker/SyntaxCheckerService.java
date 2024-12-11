@@ -17,13 +17,16 @@ public class SyntaxCheckerService implements SyntaxCheckerServiceInterface {
     @Override
     public String checkSyntax(SyntaxCheckerRequest request) {
         try {
+            // Check if there are remaining calls
+            int remainingCalls = rateLimitService.getRemainingCalls();
+            if (remainingCalls <= 0) {
+                return "You have used up all your API calls. Please purchase more API calls.";
+            }
             // Check for rate limit
             if (rateLimitService.isRateLimitExceeded()) {
-                int remainingCalls = rateLimitService.getRemainingCalls();
-                if (remainingCalls <= 0) {
-                    return "You have used up all your API calls. Please purchase more API calls.";
-                }
+                return "API calls per minute is exceeded, wait for cooldown.";
             }
+
 
             // Validate request
             if (request == null || request.getCode() == null) {
